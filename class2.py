@@ -1,3 +1,5 @@
+from math import floor
+
 def student_info():
     name = input("input name: ")
     student_id = input("input student_id: ")
@@ -5,23 +7,22 @@ def student_info():
     return {"name": name, "id": student_id, "dob": dob}
 
 def course_info():
-    course_id = input("input course id: ")
-    course = input("input course name: ")
-    return (course_id, course)
+    course_id = input("input course id: ").strip()
+    name = input("input course name: ")
+    return {"course": name, "id": course_id}
 
 def student_mark(students, courses, marks):
     if not courses:
        print("no course")
        return
-    elif not students:
+    if not students:
        print("no student")
        return
-    for cid, cname in courses:
-       print(f"{cid} - {cname}")
-    course_id = input("input course_id to choose the course")
+    for course in courses:
+       print(f"{course['id']} - {course['course']}")
+    course_id = input("input course_id to choose the course").strip()
 
-    available = any(c[0] == course_id for c in courses)
-    if not available:
+    if not any(c["id"] == course_id for c in courses):
        print("invalid course")
        return
 
@@ -31,15 +32,15 @@ def student_mark(students, courses, marks):
     print(f"\nEnter mark for course: {course_id}")
     for student in students:
         mark = float(input(f"Enter mark for {student["name"]}: "))
-        mark[course_id][student["id"]] = marks
+        marks[course_id][student["id"]] = mark
 
 def list_course(courses):
     print("list of courses: ")
     if not courses:
        print("no course")
        return
-    for cid, cname in courses:
-       print(f"ID: {cid} - Name: {cname}")
+    for course in courses:
+       print(f"ID: {course['id']} - Name: {course['course']}")
 
 def list_student(students):
    print("list of students: ")
@@ -54,13 +55,16 @@ def show_marks(students, courses, marks):
        print("no course")
        return
 
-    course_id = int(input("input course id: "))
+    course_id = input("input course id: ")
     if course_id not in marks:
        print("no mark in this course")
        return
 
+    for course in courses:
+       print(f"{course['id']} - {course['course']}")
+
     find = {s["id"] : s["name"] for s in students}
     print(f"\nmark for course {course_id}")
-    for student_id, mark in marks[course_id].item():
+    for student_id, mark in marks[course_id].items():
        name = find.get(student_id, "no student")
-       print(f"id: {student_id} - name: {name} - mark: {mark}")
+       print(f"id: {student_id} - name: {name} - mark: {floor(mark)}")
